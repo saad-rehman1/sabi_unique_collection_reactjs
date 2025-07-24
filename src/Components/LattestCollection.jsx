@@ -1,7 +1,8 @@
 import React from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Heart, ShoppingCart } from "lucide-react";
+import { useCartWishlistStore } from "../store/CarWishlist";
 
 const fetchLatestPaginated = async ({ pageParam = 1 }) => {
   const res = await axios.get(
@@ -10,9 +11,12 @@ const fetchLatestPaginated = async ({ pageParam = 1 }) => {
   return res.data.data;
 };
 
-const SareeCard = ({ item }) => (
-  <Link to={`/product/${item.slug}`}>
-    <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 group cursor-pointer">
+const SareeCard = ({ item }) => {
+  const addToCart = useCartWishlistStore((state) => state.addToCart);
+  const addToWishlist = useCartWishlistStore((state) => state.addToWishlist);
+
+  return (
+    <div className="relative group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300">
       <div className="overflow-hidden">
         <img
           src={item.image}
@@ -20,15 +24,36 @@ const SareeCard = ({ item }) => (
           className="w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
+
+      {/* Hover Icons */}
+      <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <button
+          onClick={() => addToCart(item)}
+          className="bg-white p-2 rounded-full shadow hover:bg-pink-100"
+          title="Add to Cart"
+        >
+          <ShoppingCart size={20} className="text-pink-800" />
+        </button>
+        <button
+          onClick={() => addToWishlist(item)}
+          className="bg-white p-2 rounded-full shadow hover:bg-pink-100"
+          title="Add to Wishlist"
+        >
+          <Heart size={20} className="text-pink-800" />
+        </button>
+      </div>
+
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">
           {item.name}
         </h3>
-        <span className="text-pink-900 font-bold text-lg">${item.price}</span>
+        <span className="text-pink-900 font-bold text-lg">
+          ${item.price}
+        </span>
       </div>
     </div>
-  </Link>
-);
+  );
+};
 
 function LattestCollection() {
   const {
@@ -43,19 +68,21 @@ function LattestCollection() {
     queryKey: ["latestProducts"],
     queryFn: fetchLatestPaginated,
     getNextPageParam: (lastPage) =>
-      lastPage.pagination.hasMore
+      lastPage?.pagination?.hasMore
         ? lastPage.pagination.page + 1
         : undefined,
   });
 
-  const latestProducts = data?.pages.flatMap((page) => page.products) || [];
+  const latestProducts = data?.pages?.flatMap((page) => page.products) || [];
 
   return (
     <div className="w-full px-6 text-center py-10 bg-pink-50 min-h-screen">
       <h2 className="text-4xl font-bold text-pink-950 mb-4">
         Latest Saree Collection
       </h2>
-      <p className="text-pink-900 mb-8">Shop our newest arrivals now.</p>
+      <p className="text-pink-900 mb-8">
+        Shop our newest arrivals now.
+      </p>
 
       {isLoading && <p>Loading latest sarees...</p>}
       {isError && (

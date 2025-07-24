@@ -5,6 +5,9 @@ import { Menu, X, Search, PackageSearch } from "lucide-react";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
+import { Heart, ShoppingCart } from "lucide-react";
+import { useCartWishlistStore } from "../store/CarWishlist"; // ✅ update the path if needed
+
 
 const fetchSearchResults = async ({ queryKey }) => {
   const [_key, searchQuery, page] = queryKey;
@@ -16,6 +19,9 @@ const fetchSearchResults = async ({ queryKey }) => {
 };
 
 const Header = () => {
+  const cartItems = useCartWishlistStore((state) => state.cartItems);
+  const wishlistItems = useCartWishlistStore((state) => state.wishlistItems);
+
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -34,8 +40,13 @@ const Header = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const links = [
-    "SUMILUX", "Ready To Wear", "Tranding2025",
-    "Unstitched", "KIDS", "Brands", "Blog",
+    "SUMILUX",
+    "Ready To Wear",
+    "Tranding2025",
+    "Unstitched",
+    "KIDS",
+    "Brands",
+    "Blog",
   ];
 
   useEffect(() => {
@@ -81,15 +92,47 @@ const Header = () => {
           <SiTiktok size={20} />
           <FaInstagram size={20} />
         </div>
+        <div
+          className="relative cursor-pointer"
+          onClick={() => navigate("/cart")}
+        >
+          <ShoppingCart
+            size={24}
+            className="text-pink-700 hover:text-pink-600"
+          />
+          {cartItems.length > 0 && (
+            <span className="absolute -top-2 -right-2 text-xs bg-pink-600 text-white px-1.5 py-0.5 rounded-full">
+              {cartItems.length}
+            </span>
+          )}
+        </div>
+        <div
+          className="relative cursor-pointer"
+          onClick={() => navigate("/wishlist")}
+        >
+          <Heart size={24} className="text-pink-700 hover:text-pink-600" />
+          {wishlistItems.length > 0 && (
+            <span className="absolute -top-2 -right-2 text-xs bg-pink-600 text-white px-1.5 py-0.5 rounded-full">
+              {wishlistItems.length}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Navbar */}
       <nav className="bg-white px-4 py-4 flex justify-between items-center shadow-md">
-        <h1 className="text-3xl font-bold text-pink-700 tracking-wide">Sabi Unique</h1>
+        <h1 className="text-3xl font-bold text-pink-700 tracking-wide">
+          Sabi Unique
+        </h1>
         <ul className="hidden md:flex gap-6 font-medium text-gray-700">
           {links.map((link) => (
             <li key={link}>
-              <a href="#" className="text-pink-900 hover:text-pink-600 hover:underline underline-offset-4">{link}</a>
+              <a
+                href="#"
+                className="text-pink-900 hover:text-pink-600 hover:underline underline-offset-4"
+              >
+                {link}
+              </a>
             </li>
           ))}
         </ul>
@@ -105,7 +148,12 @@ const Header = () => {
         <ul className="md:hidden px-4 pb-4 flex flex-col gap-4 text-gray-700 font-medium bg-pink-50 shadow-inner rounded-b-lg">
           {links.map((link) => (
             <li key={link}>
-              <a href="#" className="block py-2 px-3 rounded-md hover:bg-pink-100 hover:text-pink-700">{link}</a>
+              <a
+                href="#"
+                className="block py-2 px-3 rounded-md hover:bg-pink-100 hover:text-pink-700"
+              >
+                {link}
+              </a>
             </li>
           ))}
         </ul>
@@ -122,7 +170,9 @@ const Header = () => {
               <X size={24} />
             </button>
 
-            <h2 className="text-2xl font-bold mb-4 text-pink-700">Search Products</h2>
+            <h2 className="text-2xl font-bold mb-4 text-pink-700">
+              Search Products
+            </h2>
 
             <input
               type="text"
@@ -150,7 +200,9 @@ const Header = () => {
                     className="w-16 h-16 object-cover rounded"
                   />
                   <div className="flex flex-col">
-                    <h4 className="text-sm font-semibold text-pink-900 truncate">{item.name}</h4>
+                    <h4 className="text-sm font-semibold text-pink-900 truncate">
+                      {item.name}
+                    </h4>
                     <span className="text-pink-700 font-medium">
                       {item.price ? `$${item.price}` : "Price on request"}
                     </span>
