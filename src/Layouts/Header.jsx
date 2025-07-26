@@ -7,7 +7,7 @@ import { SiTiktok } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useCartWishlistStore } from "../store/CarWishlist"; // ✅ update the path if needed
-
+import { Link } from "react-router-dom";
 
 const fetchSearchResults = async ({ queryKey }) => {
   const [_key, searchQuery, page] = queryKey;
@@ -73,7 +73,7 @@ const Header = () => {
   return (
     <header className="w-full font-sans relative">
       {/* Contact Bar */}
-      <div className="bg-gradient-to-r from-pink-100 to-pink-200 text-sm text-pink-900 px-4 py-2 flex justify-between items-center shadow-sm">
+      <div className="bg-gradient-to-r from-pink-100 to-pink-200 text-sm text-pink-900 px-6 py-2 flex justify-right gap-4 items-center shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-xs sm:text-sm">
           <span>📞 +971 567413806</span>
           <span>📧 info@sabiuniquecollection.com</span>
@@ -121,8 +121,8 @@ const Header = () => {
 
       {/* Navbar */}
       <nav className="bg-white px-4 py-4 flex justify-between items-center shadow-md">
-        <h1 className="text-3xl font-bold text-pink-700 tracking-wide">
-          Sabi Unique
+        <h1 className="text-3xl font-bold text-pink-700 hover:text-pink-900 tracking-wide">
+          <Link to="/">Sabi Unique</Link>
         </h1>
         <ul className="hidden md:flex gap-6 font-medium text-gray-700">
           {links.map((link) => (

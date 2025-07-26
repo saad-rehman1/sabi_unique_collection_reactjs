@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useCartWishlistStore } from "../store/CarWishlist";
+import { toast } from "react-toastify";
 
 const fetchLatestPaginated = async ({ pageParam = 1 }) => {
   const res = await axios.get(
@@ -14,6 +15,22 @@ const fetchLatestPaginated = async ({ pageParam = 1 }) => {
 const SareeCard = ({ item }) => {
   const addToCart = useCartWishlistStore((state) => state.addToCart);
   const addToWishlist = useCartWishlistStore((state) => state.addToWishlist);
+
+  const handleAddToCart = () => {
+    addToCart(item);
+    toast.success(`${item.name} added to cart`, {
+      position: "top-right",
+      autoClose: 3000,
+    });
+  };
+
+  const handleAddToWishlist = () => {
+    addToWishlist(item);
+    toast.success(`${item.name} added to wishlist`, {
+      position: "top-right",
+      autoClose: 3000,
+    });
+  };
 
   return (
     <div className="relative group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300">
@@ -28,14 +45,14 @@ const SareeCard = ({ item }) => {
       {/* Hover Icons */}
       <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <button
-          onClick={() => addToCart(item)}
+          onClick={handleAddToCart}
           className="bg-white p-2 rounded-full shadow hover:bg-pink-100"
           title="Add to Cart"
         >
           <ShoppingCart size={20} className="text-pink-800" />
         </button>
         <button
-          onClick={() => addToWishlist(item)}
+          onClick={handleAddToWishlist}
           className="bg-white p-2 rounded-full shadow hover:bg-pink-100"
           title="Add to Wishlist"
         >

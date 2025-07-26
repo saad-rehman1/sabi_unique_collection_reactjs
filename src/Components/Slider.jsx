@@ -1,23 +1,24 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import { mainSlider } from "../Services/EndPoint/slider";
+import { useMainSliderQuery } from "../Services/EndPoint/slider"; // ✅ TanStack version
 
 export default function ImageSlider() {
-  const { sarees, fetchSarees, loading, error } = mainSlider();
+  const {
+    data: sarees = [],
+    isLoading,
+    isError,
+    error,
+  } = useMainSliderQuery();
 
-  useEffect(() => {
-    fetchSarees();
-  }, [fetchSarees]);
-
-  if (loading) {
+  if (isLoading) {
     return <div className="text-center text-lg mt-10">Loading slider...</div>;
   }
 
-  if (error) {
-    return <div className="text-center text-red-500 mt-10">Error: {error}</div>;
+  if (isError) {
+    return <div className="text-center text-red-500 mt-10">Error: {error.message}</div>;
   }
 
   if (!sarees.length) {
