@@ -25,7 +25,7 @@ export const useSareeStore = create((set, get) => ({
         loading: false,
       }));
     } catch (error) {
-      set({ error: "Failed to load sarees.", loading: false, });
+      set({ error: "Failed to load sarees.", loading: false });
     }
   },
 }));

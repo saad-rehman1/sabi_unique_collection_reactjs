@@ -82,7 +82,7 @@ const Header = () => {
             <PackageSearch size={18} /> Track Order
           </button>
         </div>
-        <div className="flex gap-4 text-pink-700 items-center">
+        <div className="flex gap-2 text-pink-700 items-center">
           <Search
             size={24}
             className="cursor-pointer hover:text-pink-600 transition-colors"
@@ -101,7 +101,7 @@ const Header = () => {
             className="text-pink-700 hover:text-pink-600"
           />
           {cartItems.length > 0 && (
-            <span className="absolute -top-2 -right-2 text-xs bg-pink-600 text-white px-1.5 py-0.5 rounded-full">
+            <span className="absolute -top-2  text-xs bg-pink-600 text-white  py-0.5 rounded-full">
               {cartItems.length}
             </span>
           )}
@@ -112,7 +112,7 @@ const Header = () => {
         >
           <Heart size={24} className="text-pink-700 hover:text-pink-600" />
           {wishlistItems.length > 0 && (
-            <span className="absolute -top-2 -right-2 text-xs bg-pink-600 text-white px-1.5 py-0.5 rounded-full">
+            <span className="absolute -top-2  text-xs bg-pink-600 text-white  py-0.5 rounded-full">
               {wishlistItems.length}
             </span>
           )}

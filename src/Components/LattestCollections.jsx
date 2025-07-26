@@ -2,7 +2,9 @@ import React from "react";
 import { useLatestProductsQuery } from "../Services/EndPoint/lattestCollection";
 import { useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
-import { useCartWishlistStore } from "../store/CarWishlist"; // ✅ Combined store
+import { useCartWishlistStore } from "../store/CarWishlist";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // ✅ required once
 
 function LattestCollections() {
   const {
@@ -15,6 +17,16 @@ function LattestCollections() {
   const navigate = useNavigate();
   const addToCart = useCartWishlistStore((state) => state.addToCart);
   const addToWishlist = useCartWishlistStore((state) => state.addToWishlist);
+
+  const handleAddToCart = (item) => {
+    addToCart(item);
+    toast.success("Item added to cart!");
+  };
+
+  const handleAddToWishlist = (item) => {
+    addToWishlist(item);
+    toast.success("Item added to wishlist!");
+  };
 
   return (
     <div className="w-full px-6 m-auto text-center py-10 bg-pink-50 min-h-screen">
@@ -32,22 +44,31 @@ function LattestCollections() {
             key={item._id}
             className="relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 group"
           >
-            {/* Image + Hover Icons */}
-            <div className="relative overflow-hidden">
+            <div
+              className="relative overflow-hidden cursor-pointer"
+              onClick={() => navigate(`/product/${item.slug}`)}
+            >
               <img
                 src={item.image}
                 alt={item.name}
                 className="w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-105"
               />
+
               <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <button
-                  onClick={() => addToCart(item)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToCart(item); // ✅ show toast
+                  }}
                   className="bg-white p-2 rounded-full shadow hover:bg-pink-100"
                 >
                   <FaShoppingCart className="text-pink-800" />
                 </button>
                 <button
-                  onClick={() => addToWishlist(item)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToWishlist(item); // ✅ show toast
+                  }}
                   className="bg-white p-2 rounded-full shadow hover:bg-pink-100"
                 >
                   <FaHeart className="text-pink-800" />
@@ -55,8 +76,10 @@ function LattestCollections() {
               </div>
             </div>
 
-            {/* Product Info */}
-            <div className="p-4 text-left">
+            <div
+              className="p-4 text-left cursor-pointer"
+              onClick={() => navigate(`/product/${item.slug}`)}
+            >
               <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">{item.name}</h3>
               <span className="text-pink-900 font-bold text-lg">${item.price}</span>
             </div>
