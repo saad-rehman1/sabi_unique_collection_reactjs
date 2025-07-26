@@ -5,8 +5,8 @@ import Home from "./Pages/Home";
 import Layout from "./Layouts/Layout";
 import LattestCollection from "./Components/LattestCollection";
 import ProductDetail from "./Components/ProductDeltail"; 
-import Cart from "./Components/Cart"
-import Wishlist from "./Components/Wishlist";
+import Cart from "./Pages/Cart"
+import Wishlist from "./Pages/Wishlist";
 
 function App() {
   return (
