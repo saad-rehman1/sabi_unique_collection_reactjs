@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import React from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -18,15 +17,46 @@ export default function Register() {
 
   const onSubmit = async (formData) => {
     try {
-      const { data } = await axios.post(
+      // 1. Register the user
+      const registerRes = await axios.post(
         "https://www.backend.sabiuniquecollection.com/api/users/register",
-        formData
+        formData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
       );
-      toast.success("Registration successful!");
-      reset();
-      navigate("/login"); // redirect to login page after success
+
+      toast.success("Registered successfully!");
+
+      // 2. Automatically login after registration
+      const loginRes = await axios.post(
+        "https://www.backend.sabiuniquecollection.com/api/users/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      const token = loginRes.data.data.token;
+      localStorage.setItem("token", token);
+
+      // 3. Fetch profile using token
+      const profileRes = await axios.get(
+        "https://www.backend.sabiuniquecollection.com/api/users/profile",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      localStorage.setItem("user", JSON.stringify(profileRes.data.data));
+
+      // 4. Navigate to profile
+      navigate("/profile");
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("Register/Login error:", error);
       toast.error(error?.response?.data?.message || "Registration failed");
     }
   };

@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -17,20 +16,43 @@ export default function Login() {
 
   const onSubmit = async (formData) => {
     try {
-      const { data } = await axios.post(
+      // Login user
+      const response = await axios.post(
         "https://www.backend.sabiuniquecollection.com/api/users/login",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
-      // Save token and user info in localStorage (or Zustand/Auth context)
-      localStorage.setItem("token", data.data.token);
-      localStorage.setItem("user", JSON.stringify(data.data));
+      const token = response?.data?.data?.token;
+      if (!token) {
+        toast.error("Login failed: token missing");
+        return;
+      }
+
+      localStorage.setItem("token", token);
+
+      // Fetch user profile
+      const profileRes = await axios.get(
+        "https://www.backend.sabiuniquecollection.com/api/users/profile",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      localStorage.setItem("user", JSON.stringify(profileRes.data.data));
 
       toast.success("Login successful!");
-      navigate("/"); // redirect to home or dashboard
+      navigate("/profile");
     } catch (error) {
-      console.error("Login error:", error);
-      toast.error(error?.response?.data?.message || "Login failed");
+      const msg =
+        error?.response?.data?.message || "Invalid email or password";
+      toast.error(msg);
     }
   };
 
