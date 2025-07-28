@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useCartWishlistStore } from "../store/CarWishlist"; // ✅ update the path if needed
 import { Link } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
 
 const fetchSearchResults = async ({ queryKey }) => {
   const [_key, searchQuery, page] = queryKey;
@@ -91,6 +92,13 @@ const Header = () => {
           <FaFacebookF size={20} />
           <SiTiktok size={20} />
           <FaInstagram size={20} />
+           <Link
+            to="/register"
+            className="flex items-center mx-2 space-x-2 hover:text-pink-950 transition"
+          >
+            <FaUser className="text-xl" />
+            
+          </Link>
         </div>
         <div
           className="relative cursor-pointer"
@@ -116,6 +124,8 @@ const Header = () => {
               {wishlistItems.length}
             </span>
           )}
+
+         
         </div>
       </div>
 
