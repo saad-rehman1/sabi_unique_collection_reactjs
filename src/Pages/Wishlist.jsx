@@ -48,7 +48,7 @@ const Wishlist = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleAddToCart(item)}
-                  className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md flex items-center gap-1"
+                  className="bg-pink-700 hover:bg-pink-950 text-white px-3 py-2 rounded-md flex items-center gap-1"
                 >
                   <FaShoppingCart /> Add to Cart
                 </button>

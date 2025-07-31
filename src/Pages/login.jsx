@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { FaSignInAlt } from "react-icons/fa";
+import { useAuthStore } from "../store/useAuthenticationStor";
 
 export default function Login() {
   const {
@@ -13,10 +14,10 @@ export default function Login() {
   } = useForm();
 
   const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser);
 
   const onSubmit = async (formData) => {
     try {
-      // Login user
       const response = await axios.post(
         "https://www.backend.sabiuniquecollection.com/api/users/login",
         formData,
@@ -35,7 +36,6 @@ export default function Login() {
 
       localStorage.setItem("token", token);
 
-      // Fetch user profile
       const profileRes = await axios.get(
         "https://www.backend.sabiuniquecollection.com/api/users/profile",
         {
@@ -45,10 +45,14 @@ export default function Login() {
         }
       );
 
-      localStorage.setItem("user", JSON.stringify(profileRes.data.data));
+      const user = profileRes.data.data;
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
 
       toast.success("Login successful!");
-      navigate("/profile");
+
+      // ✅ Redirect to home page (change if needed)
+      navigate("/");
     } catch (error) {
       const msg =
         error?.response?.data?.message || "Invalid email or password";
@@ -87,7 +91,9 @@ export default function Login() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-pink-500"
             />
             {errors.password && (
-              <p className="text-sm text-red-500">{errors.password.message}</p>
+              <p className="text-sm text-red-500">
+                {errors.password.message}
+              </p>
             )}
           </div>
           <button
@@ -98,6 +104,7 @@ export default function Login() {
             {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </form>
+
         <p className="text-sm text-center text-gray-600 mt-4">
           Don't have an account?{" "}
           <button
@@ -109,7 +116,7 @@ export default function Login() {
         </p>
 
         <p
-          className="text-right text-sm text-pink-700 hover:underline cursor-pointer"
+          className="text-right text-sm text-pink-700 hover:underline cursor-pointer mt-2"
           onClick={() => navigate("/forgot-password")}
         >
           Forgot Password?

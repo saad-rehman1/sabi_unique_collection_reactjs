@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { FaUserPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthenticationStor"; // ⬅️ Assuming this is your Zustand auth store
 
 export default function Register() {
   const {
@@ -14,11 +15,12 @@ export default function Register() {
   } = useForm();
 
   const navigate = useNavigate();
+  const setUser = useAuthStore((state) => state.setUser); // Zustand action to set user
 
   const onSubmit = async (formData) => {
     try {
       // 1. Register the user
-      const registerRes = await axios.post(
+      await axios.post(
         "https://www.backend.sabiuniquecollection.com/api/users/register",
         formData,
         {
@@ -28,7 +30,7 @@ export default function Register() {
 
       toast.success("Registered successfully!");
 
-      // 2. Automatically login after registration
+      // 2. Login to get token
       const loginRes = await axios.post(
         "https://www.backend.sabiuniquecollection.com/api/users/login",
         {
@@ -43,7 +45,7 @@ export default function Register() {
       const token = loginRes.data.data.token;
       localStorage.setItem("token", token);
 
-      // 3. Fetch profile using token
+      // 3. Get user profile with token
       const profileRes = await axios.get(
         "https://www.backend.sabiuniquecollection.com/api/users/profile",
         {
@@ -51,10 +53,12 @@ export default function Register() {
         }
       );
 
-      localStorage.setItem("user", JSON.stringify(profileRes.data.data));
+      const user = profileRes.data.data;
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user); // ⬅️ Set user in Zustand store
 
-      // 4. Navigate to profile
-      navigate("/profile");
+      // 4. Navigate to home
+      navigate("/");
     } catch (error) {
       console.error("Register/Login error:", error);
       toast.error(error?.response?.data?.message || "Registration failed");
