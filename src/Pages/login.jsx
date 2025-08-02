@@ -46,7 +46,6 @@ export default function Login() {
       );
 
       const user = profileRes.data.data;
-      localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
 
       toast.success("Login successful!");

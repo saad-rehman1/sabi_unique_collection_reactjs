@@ -1,9 +1,9 @@
 import React from "react";
 import { useCartWishlistStore } from "../store/CarWishlist";
-import { toast } from "react-hot-toast"; // ✅ using react-hot-toast
+import { toast } from "react-hot-toast";
 import { FaHeartBroken, FaShoppingCart } from "react-icons/fa";
 
-const Wishlist = () => {
+export default function Wishlist() {
   const {
     wishlistItems,
     removeFromWishlist,
@@ -14,12 +14,7 @@ const Wishlist = () => {
   const handleAddToCart = (item) => {
     const alreadyInCart = cartItems.find((cartItem) => cartItem._id === item._id);
     addToCart(item);
-
-    if (alreadyInCart) {
-      toast.success("Item quantity increased in cart");
-    } else {
-      toast.success("Item added to cart");
-    }
+    toast.success(alreadyInCart ? "Item quantity increased in cart" : "Item added to cart");
   };
 
   const handleRemoveFromWishlist = (id) => {
@@ -28,43 +23,47 @@ const Wishlist = () => {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Your Wishlist</h2>
+    <div className="container mx-auto px-4 py-6">
+      
+
       {wishlistItems.length === 0 ? (
-        <p>Your wishlist is empty.</p>
+        <p className="text-center text-gray-500">Your wishlist is empty.</p>
       ) : (
-        <ul className="space-y-4">
+        <div className="space-y-4">
           {wishlistItems.map((item) => (
-            <li key={item._id} className="flex items-center gap-4 border p-4 rounded-xl">
+            <div
+              key={item._id}
+              className="flex items-center gap-6 bg-white border border-gray-200 rounded-2xl shadow p-4"
+            >
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-20 h-20 object-cover rounded"
+                className="w-20 h-24 object-cover rounded-md border"
               />
               <div className="flex-1">
                 <h4 className="font-semibold">{item.name}</h4>
-                <p className="text-gray-600">${item.price}</p>
+                <p className="text-sm text-gray-500">SKU: {item.sku || "—"}</p>
+                <p className="text-red-600 font-bold">AED {item.price}</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row items-center gap-2">
                 <button
                   onClick={() => handleAddToCart(item)}
-                  className="bg-pink-700 hover:bg-pink-950 text-white px-3 py-2 rounded-md flex items-center gap-1"
+                  className="bg-[#a01c2f] hover:bg-[#8b1a2a] text-white px-4 py-2 rounded flex items-center gap-2"
                 >
                   <FaShoppingCart /> Add to Cart
                 </button>
                 <button
                   onClick={() => handleRemoveFromWishlist(item._id)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md flex items-center gap-1"
+                  className="text-gray-500 hover:text-red-600 flex items-center gap-1"
+                  title="Remove"
                 >
-                  <FaHeartBroken /> Remove
+                  <FaHeartBroken size={18} /> Remove
                 </button>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
-};
-
-export default Wishlist;
+}

@@ -12,6 +12,11 @@ import Login from "./Pages/login";
 import ForgotPassword from "./Pages/Forgetpassword";
 import OtpVerification from "./Pages/optVerification";
 import ResetPassword from "./Pages/Resetpassword";
+import DashboardLayout from "./Pages/Dashboard/dashboard";
+import Account from "./Pages/Dashboard/Account";
+import AddressBook from "./Pages/Dashboard/Addressbook";
+import Orders from "./Pages/Dashboard/Oders";
+import HelpSupport from "./Pages/Dashboard/HelpandSuppot";
 
 function App() {
   return (
@@ -26,6 +31,18 @@ function App() {
          <Route path="/forgot-password" element={ <Layout><ForgotPassword/></Layout>} />
          <Route path="/otp-verification" element={ <Layout><OtpVerification/></Layout>} />
           <Route path="/reset-password" element={ <Layout><ResetPassword/></Layout>} />
+                  <Route path="/login" element={<Login />} />
+        
+        <Route path="/profile" element={<Layout><DashboardLayout /></Layout>}>
+          <Route path="account" element={<Account />} />
+          <Route path="password" element={<ForgotPassword />} />
+          <Route path="address-book" element={<AddressBook/>} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="wishlist" element={<Wishlist />} />
+          <Route path="help-support" element={<HelpSupport />} />
+         
+        </Route>f
+
     </Routes>
   );
 }
