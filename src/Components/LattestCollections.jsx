@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { useCartWishlistStore } from "../store/CarWishlist";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // ✅ required once
+import "react-toastify/dist/ReactToastify.css";
 
 function LattestCollections() {
   const {
@@ -19,7 +19,7 @@ function LattestCollections() {
   const addToWishlist = useCartWishlistStore((state) => state.addToWishlist);
 
   const handleAddToCart = (item) => {
-    addToCart(item);
+    addToCart({ ...item, quantity: 1 }); // always add with quantity 1
     toast.success("Item added to cart!");
   };
 
@@ -30,13 +30,18 @@ function LattestCollections() {
 
   return (
     <div className="w-full px-6 m-auto text-center py-10 bg-pink-50 min-h-screen">
-      <h2 className="text-4xl font-bold text-pink-950 mb-2">Latest Saree Collections</h2>
+      <h2 className="text-4xl font-bold text-pink-950 mb-2">
+        Latest Saree Collections
+      </h2>
       <p className="text-pink-950 mb-10">
-        Discover our newest arrivals, featuring premium materials and timeless designs crafted for the modern wardrobe.
+        Discover our newest arrivals, featuring premium materials and timeless
+        designs crafted for the modern wardrobe.
       </p>
 
       {isLoading && <p className="text-lg text-pink-900">Loading...</p>}
-      {isError && <p className="text-red-500">{error.message || "Something went wrong."}</p>}
+      {isError && (
+        <p className="text-red-500">{error.message || "Something went wrong."}</p>
+      )}
 
       <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {products.slice(0, 8).map((item) => (
@@ -58,7 +63,7 @@ function LattestCollections() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleAddToCart(item); // ✅ show toast
+                    handleAddToCart(item);
                   }}
                   className="bg-white p-2 rounded-full shadow hover:bg-pink-100"
                 >
@@ -67,7 +72,7 @@ function LattestCollections() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleAddToWishlist(item); // ✅ show toast
+                    handleAddToWishlist(item);
                   }}
                   className="bg-white p-2 rounded-full shadow hover:bg-pink-100"
                 >
@@ -80,8 +85,12 @@ function LattestCollections() {
               className="p-4 text-left cursor-pointer"
               onClick={() => navigate(`/product/${item.slug}`)}
             >
-              <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">{item.name}</h3>
-              <span className="text-pink-900 font-bold text-lg">${item.price}</span>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">
+                {item.name}
+              </h3>
+              <span className="text-pink-900 font-bold text-lg">
+                ${item.price}
+              </span>
             </div>
           </div>
         ))}

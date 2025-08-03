@@ -17,6 +17,7 @@ import Account from "./Pages/Dashboard/Account";
 import AddressBook from "./Pages/Dashboard/Addressbook";
 import Orders from "./Pages/Dashboard/Oders";
 import HelpSupport from "./Pages/Dashboard/HelpandSuppot";
+import ChangePassword from "./Pages/Dashboard/Password";
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
         
         <Route path="/profile" element={<Layout><DashboardLayout /></Layout>}>
           <Route path="account" element={<Account />} />
-          <Route path="password" element={<ForgotPassword />} />
+          <Route path="password" element={<ChangePassword />} />
           <Route path="address-book" element={<AddressBook/>} />
           <Route path="orders" element={<Orders />} />
           <Route path="wishlist" element={<Wishlist />} />

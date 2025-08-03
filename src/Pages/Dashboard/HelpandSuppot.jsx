@@ -108,10 +108,10 @@ export default function HelpSupport() {
       {/* Contact Info */}
       <div className="mt-10 text-center text-sm text-gray-600 space-y-2">
         <p className="flex justify-center items-center gap-2">
-          <FaPhoneAlt className="text-blue-600" /> +92 300 1234567
+          <FaPhoneAlt className="text-pink-600" /> +92 300 1234567
         </p>
         <p className="flex justify-center items-center gap-2">
-          <FaEnvelope className="text-blue-600" /> support@sabiuniquecollection.com
+          <FaEnvelope className="text-pink-600" /> support@sabiuniquecollection.com
         </p>
       </div>
     </div>

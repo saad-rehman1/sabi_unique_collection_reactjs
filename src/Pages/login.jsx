@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { FaSignInAlt } from "react-icons/fa";
 import { useAuthStore } from "../store/useAuthenticationStor";
+import { loginUser } from "../Services/EndPoint/loginapi";
 
 export default function Login() {
   const {
@@ -18,39 +18,11 @@ export default function Login() {
 
   const onSubmit = async (formData) => {
     try {
-      const response = await axios.post(
-        "https://www.backend.sabiuniquecollection.com/api/users/login",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const data = await loginUser(formData);
+      const user = data?.data;
 
-      const token = response?.data?.data?.token;
-      if (!token) {
-        toast.error("Login failed: token missing");
-        return;
-      }
-
-      localStorage.setItem("token", token);
-
-      const profileRes = await axios.get(
-        "https://www.backend.sabiuniquecollection.com/api/users/profile",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const user = profileRes.data.data;
       setUser(user);
-
       toast.success("Login successful!");
-
-      // ✅ Redirect to home page (change if needed)
       navigate("/");
     } catch (error) {
       const msg =
@@ -64,10 +36,9 @@ export default function Login() {
       <div className="w-full max-w-md bg-white shadow-md rounded-xl p-8">
         <div className="flex items-center gap-2 justify-center mb-6">
           <FaSignInAlt className="text-pink-700 text-3xl" />
-          <h2 className="text-2xl font-bold text-pink-700 tracking-wide">
-            Login
-          </h2>
+          <h2 className="text-2xl font-bold text-pink-700 tracking-wide">Login</h2>
         </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
             <label className="text-sm font-medium text-gray-700">Email</label>
@@ -80,21 +51,19 @@ export default function Login() {
               <p className="text-sm text-red-500">{errors.email.message}</p>
             )}
           </div>
+
           <div>
-            <label className="text-sm font-medium text-gray-700">
-              Password
-            </label>
+            <label className="text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
               {...register("password", { required: "Password is required" })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-pink-500"
             />
             {errors.password && (
-              <p className="text-sm text-red-500">
-                {errors.password.message}
-              </p>
+              <p className="text-sm text-red-500">{errors.password.message}</p>
             )}
           </div>
+
           <button
             type="submit"
             disabled={isSubmitting}

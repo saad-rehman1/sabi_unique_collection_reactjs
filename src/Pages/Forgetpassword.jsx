@@ -1,8 +1,8 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { sendForgotPasswordOTP } from "../Services/EndPoint/forgotapi"; // ✅ import the endpoint
 
 export default function ForgotPassword() {
   const {
@@ -14,10 +14,7 @@ export default function ForgotPassword() {
 
   const onSubmit = async ({ email }) => {
     try {
-      const { data } = await axios.post(
-        "https://www.backend.sabiuniquecollection.com/api/users/forgot-password",
-        { email }
-      );
+      const data = await sendForgotPasswordOTP(email); // ✅ use endpoint
 
       if (data?.success) {
         toast.success(data.message || "OTP sent to your email!");

@@ -1,11 +1,15 @@
-// src/pages/Dashboard/Account.jsx
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import {
+  FaUser,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaUserEdit,
+} from "react-icons/fa";
 
-export default function Account() {
+export default function Profile() {
   const [userData, setUserData] = useState(null);
-  const [editMode, setEditMode] = useState(false);
 
   const {
     register,
@@ -14,16 +18,17 @@ export default function Account() {
     formState: { isSubmitting },
   } = useForm();
 
-  // Simulate API fetch with dummy data
+  // Simulated API fetch
   const fetchUserData = () => {
     setTimeout(() => {
       const dummy = {
         name: "Saad Rehman",
         email: "saad@example.com",
+        phone: "+92 300 1234567",
       };
       setUserData(dummy);
       reset(dummy);
-    }, 500); // Simulate delay
+    }, 300);
   };
 
   useEffect(() => {
@@ -32,89 +37,85 @@ export default function Account() {
 
   const onSubmit = async (data) => {
     try {
-      // Simulate API update
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Simulate success or failure
-      const success = true; // change to `false` to simulate error
-
-      if (success) {
-        toast.success("Profile updated successfully");
-        setEditMode(false);
-        setUserData(data);
-      } else {
-        throw new Error("Simulated failure");
-      }
-    } catch (error) {
-      toast.error("Update failed. Please try again.");
+      await new Promise((res) => setTimeout(res, 800));
+      toast.success("Profile updated successfully!");
+      setUserData(data);
+    } catch (err) {
+      toast.error("Something went wrong");
     }
   };
 
-  if (!userData) return <p>Loading your account info...</p>;
+  if (!userData)
+    return <p className="text-center mt-10 text-lg text-gray-500">Loading your profile...</p>;
 
   return (
-    <div className="max-w-xl mx-auto bg-white shadow rounded-2xl p-6">
-      <h2 className="text-2xl font-bold text-pink-700 mb-6">👤 Account Information</h2>
+    <div className="max-w-3xl mx-auto mt-10 bg-white p-6 rounded-2xl shadow">
+      <h2 className="text-2xl font-bold text-pink-600 mb-6 flex items-center gap-2">
+        <FaUserEdit className="text-pink-600" />
+        Profile Information
+      </h2>
 
-      {!editMode ? (
-        <div className="space-y-4">
-          <p>
-            <strong>Name:</strong> {userData.name}
-          </p>
-          <p>
-            <strong>Email:</strong> {userData.email}
-          </p>
-
-          <button
-            onClick={() => setEditMode(true)}
-            className="bg-pink-600 hover:bg-pink-700 text-white py-2 px-4 rounded-lg text-sm"
-          >
-            Edit Profile
-          </button>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Name */}
+        <div>
+          <label className="block mb-1 font-medium flex items-center gap-2">
+            <FaUser className="text-gray-500" />
+            Name
+          </label>
+          <input
+            {...register("name", { required: "Name is required" })}
+            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            type="text"
+            placeholder="Your name"
+          />
         </div>
-      ) : (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
-            <input
-              {...register("name", { required: true })}
-              className="w-full border border-gray-300 rounded-lg p-2"
-              type="text"
-              placeholder="Your name"
-            />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              {...register("email", { required: true })}
-              className="w-full border border-gray-300 rounded-lg p-2"
-              type="email"
-              placeholder="you@example.com"
-            />
-          </div>
+        {/* Email */}
+        <div>
+          <label className="block mb-1 font-medium flex items-center gap-2">
+            <FaEnvelope className="text-gray-500" />
+            Email
+          </label>
+          <input
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[^@]+@[^@]+\.[^@]+$/,
+                message: "Invalid email address",
+              },
+            })}
+            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            type="email"
+            placeholder="you@example.com"
+          />
+        </div>
 
-          <div className="flex gap-3">
-            <button
-              disabled={isSubmitting}
-              type="submit"
-              className="bg-pink-600 hover:bg-pink-800 text-white py-2 px-4 rounded-lg text-sm"
-            >
-              {isSubmitting ? "Saving..." : "Save Changes"}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEditMode(false);
-                reset(userData);
-              }}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg text-sm"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      )}
+        {/* Phone */}
+        <div>
+          <label className="block mb-1 font-medium flex items-center gap-2">
+            <FaPhoneAlt className="text-gray-500" />
+            Phone
+          </label>
+          <input
+            {...register("phone", {
+              required: "Phone is required",
+              minLength: 10,
+            })}
+            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
+            type="tel"
+            placeholder="+92 300 1234567"
+          />
+        </div>
+
+        {/* Save button */}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200"
+        >
+          {isSubmitting ? "Saving..." : "Save Changes"}
+        </button>
+      </form>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import axios from "axios";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useCartWishlistStore } from "../store/CarWishlist";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const fetchLatestPaginated = async ({ pageParam = 1 }) => {
   const res = await axios.get(
@@ -15,6 +16,7 @@ const fetchLatestPaginated = async ({ pageParam = 1 }) => {
 const SareeCard = ({ item }) => {
   const addToCart = useCartWishlistStore((state) => state.addToCart);
   const addToWishlist = useCartWishlistStore((state) => state.addToWishlist);
+  const navigate = useNavigate();
 
   const handleAddToCart = () => {
     addToCart(item);
@@ -32,8 +34,15 @@ const SareeCard = ({ item }) => {
     });
   };
 
+  const handleNavigate = () => {
+    navigate(`/product/${item.slug}`); // Make sure this route exists
+  };
+
   return (
-    <div className="relative group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300">
+    <div
+      onClick={handleNavigate}
+      className="relative group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 cursor-pointer"
+    >
       <div className="overflow-hidden">
         <img
           src={item.image}
@@ -43,7 +52,10 @@ const SareeCard = ({ item }) => {
       </div>
 
       {/* Hover Icons */}
-      <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div
+        className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        onClick={(e) => e.stopPropagation()} // Prevent card click
+      >
         <button
           onClick={handleAddToCart}
           className="bg-white p-2 rounded-full shadow hover:bg-pink-100"
@@ -64,9 +76,7 @@ const SareeCard = ({ item }) => {
         <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">
           {item.name}
         </h3>
-        <span className="text-pink-900 font-bold text-lg">
-          ${item.price}
-        </span>
+        <span className="text-pink-900 font-bold text-lg">${item.price}</span>
       </div>
     </div>
   );
@@ -97,9 +107,7 @@ function LattestCollection() {
       <h2 className="text-4xl font-bold text-pink-950 mb-4">
         Latest Saree Collection
       </h2>
-      <p className="text-pink-900 mb-8">
-        Shop our newest arrivals now.
-      </p>
+      <p className="text-pink-900 mb-8">Shop our newest arrivals now.</p>
 
       {isLoading && <p>Loading latest sarees...</p>}
       {isError && (

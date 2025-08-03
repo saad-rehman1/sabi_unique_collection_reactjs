@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { FaUserPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/useAuthenticationStor"; // ⬅️ Assuming this is your Zustand auth store
+import { useAuthStore } from "../store/useAuthenticationStor";
+import { registerUser, loginUser, fetchUserProfile } from "../Services/EndPoint/registerapi";
 
 export default function Register() {
   const {
@@ -15,49 +15,27 @@ export default function Register() {
   } = useForm();
 
   const navigate = useNavigate();
-  const setUser = useAuthStore((state) => state.setUser); // Zustand action to set user
+  const setUser = useAuthStore((state) => state.setUser);
 
   const onSubmit = async (formData) => {
     try {
-      // 1. Register the user
-      await axios.post(
-        "https://www.backend.sabiuniquecollection.com/api/users/register",
-        formData,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
+      await registerUser(formData);
       toast.success("Registered successfully!");
 
-      // 2. Login to get token
-      const loginRes = await axios.post(
-        "https://www.backend.sabiuniquecollection.com/api/users/login",
-        {
-          email: formData.email,
-          password: formData.password,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const loginRes = await loginUser({
+        email: formData.email,
+        password: formData.password,
+      });
 
       const token = loginRes.data.data.token;
       localStorage.setItem("token", token);
 
-      // 3. Get user profile with token
-      const profileRes = await axios.get(
-        "https://www.backend.sabiuniquecollection.com/api/users/profile",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
+      const profileRes = await fetchUserProfile(token);
       const user = profileRes.data.data;
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user); // ⬅️ Set user in Zustand store
 
-      // 4. Navigate to home
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
+
       navigate("/");
     } catch (error) {
       console.error("Register/Login error:", error);
